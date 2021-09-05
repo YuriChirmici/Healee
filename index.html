@@ -3,9 +3,26 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<title>Currency exhange rate</title>
 </head>
 <body>
-	
+	<div class="container">
+		<label for="currency">Choose a currency:</label>
+		<select id="currency" name="currency">
+			<option value="usd" selected>USD</option>
+			<option value="eur">EUR</option>
+			<option value="aud">AUD</option>
+			<option value="cad">CAD</option>
+			<option value="chf">CHF</option>
+			<option value="nzd">NZD</option>
+			<option value="bgn">BGN</option>
+		</select>
+
+		<div class="exchangeRate"></div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="js/script.js"></script>
 </body>
 </html>

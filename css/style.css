@@ -1,0 +1,15 @@
+.container {
+	width: 100%;
+	max-width: 1170px;
+	margin: 0 auto;
+	padding: 0 15px;
+}
+
+.exchangeRate {
+	display: flex;
+	justify-content: space-between;
+}
+
+.currencyGroup {
+	width: 30%;
+}
