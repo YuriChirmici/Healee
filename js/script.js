@@ -3,7 +3,6 @@ window.onload = function() {
 	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
 	setLoading(true);
 	let promises = [];
-	localStorage.clear();
 	
 	//if the data is in local storage, we take it from there, 
 	//otherwise we send a request to the server
@@ -183,7 +182,7 @@ function getLongestChain(data) {
 function setLoading(isLoading) {
 	let currencySelect = document.querySelector('#currency');
 	let loading = document.querySelector('.loading');
-	
+
 	disableOptions(currencySelect, isLoading);
 	loading.style.display = isLoading ? 'block' : 'none';
 }
