@@ -20,6 +20,11 @@ body {
 	margin-bottom: 30px;
 }
 
+.loading {
+	display: none;
+	text-align: center;
+}
+
 .exchangeRate {
 	display: flex;
 	justify-content: space-between;

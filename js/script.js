@@ -1,8 +1,9 @@
 window.onload = function() {
 	let currencies = ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'];
 	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
-	disableOptions(currencySelect, true);
+	setLoading(true);
 	let promises = [];
+	localStorage.clear();
 	
 	//if the data is in local storage, we take it from there, 
 	//otherwise we send a request to the server
@@ -10,7 +11,7 @@ window.onload = function() {
 	if (currencyData) {
 		currencyInfo = currencyData;
 		renderHTML(currencyData);
-		disableOptions(currencySelect, false);
+		setLoading(false);
 	}
 	else {
 		for (let i = 0; i < currencies.length; i++) {
@@ -23,7 +24,7 @@ window.onload = function() {
 		axios.all(promises)
 			.then( (responses) => {
 				let currencyData = {};
-				disableOptions(currencySelect, false);
+				setLoading(false);
 
 				responses.forEach(response => {
 					let currencyURL = response.config.url.split('/');
@@ -177,6 +178,14 @@ function getLongestChain(data) {
 	}, 0);
 
 	return maxLength;
+}
+
+function setLoading(isLoading) {
+	let currencySelect = document.querySelector('#currency');
+	let loading = document.querySelector('.loading');
+	
+	disableOptions(currencySelect, isLoading);
+	loading.style.display = isLoading ? 'block' : 'none';
 }
 
 let currencySelect = document.querySelector('#currency');
