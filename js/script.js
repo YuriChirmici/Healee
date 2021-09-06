@@ -3,8 +3,10 @@ window.onload = function() {
 	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
 	disableOptions(currencySelect, true);
 	let promises = [];
+	
+	//if the data is in local storage, we take it from there, 
+	//otherwise we send a request to the server
 	let currencyData = getFromLocalStorage();
-
 	if (currencyData) {
 		currencyInfo = currencyData;
 		renderHTML(currencyData);
@@ -68,11 +70,13 @@ window.onload = function() {
 }
 
 function renderHTML(data) {
-	//
 	let currencySelect = document.querySelector('#currency');
 	let currencySelected = document.querySelector('#currency').value;
 	let exchangeRateDiv = document.querySelector('.exchangeRate');
+	let longestArrayDiv = document.querySelector('.longestArray');
+
 	exchangeRateDiv.innerHTML = "";
+	longestArrayDiv.innerHTML = "";
 	let groups = [[], [], []];
 
 	//divides into 3 groups depending on the value
@@ -99,10 +103,14 @@ function renderHTML(data) {
 			let p = `<p> ${el.currency.toUpperCase()}-${el.currencyTo.toUpperCase()}: ${el.value} </p>`;
 			div.insertAdjacentHTML('beforeend', p);
 		});
-		let p = `<p> Count: ${group.length}`;
+		let p = `<p class="red"> Count: ${group.length}`;
 		div.insertAdjacentHTML('beforeend', p);
 		exchangeRateDiv.append(div);
 	});	
+
+	let maxLength = getLongestChain(data[currencySelected].exchangeRate);
+	let p = `<p class="red"> The length of the longest array: ${maxLength}`;
+	longestArrayDiv.insertAdjacentHTML('beforeend', p);
 }
 
 function disableOptions(element, disabled) {
@@ -135,6 +143,40 @@ function getDate() {
 	dd = (dd < 10) ? "0" + dd : dd;
 	mm = (mm < 10) ? "0" + mm : mm;
 	return `${yyyy}-${mm}-${dd}`;
+}
+
+function getLongestChain(data) {
+	//the absolute difference between any two elements of the array is <= 0.5
+	let chains = [];
+	let difference = 0.5;
+
+	for (let i = 0; i < data.length; i++) {
+		let num = data[i].value;
+		let chain = [data[i]];
+		let min = num;
+		let max = num;
+		for (let j = 0; j < data.length; j++) {
+			let currentNum = data[j].value;
+			if (i === j || currentNum < max - difference || 
+				currentNum > min + difference) continue;
+
+			if (currentNum < min) {
+				min = currentNum;
+			}
+
+			if (currentNum > max) {
+				max = currentNum;
+			}
+
+			chain.push(data[j]);
+		}
+		chains.push(chain);
+	}
+	let maxLength = chains.reduce((prev, chain) => {
+		return (prev > chain.length) ? prev : chain.length;
+	}, 0);
+
+	return maxLength;
 }
 
 let currencySelect = document.querySelector('#currency');

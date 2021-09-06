@@ -8,18 +8,20 @@
 </head>
 <body>
 	<div class="container">
-		<label for="currency">Choose a currency:</label>
-		<select id="currency" name="currency">
-			<option value="usd" selected>USD</option>
-			<option value="eur">EUR</option>
-			<option value="aud">AUD</option>
-			<option value="cad">CAD</option>
-			<option value="chf">CHF</option>
-			<option value="nzd">NZD</option>
-			<option value="bgn">BGN</option>
-		</select>
-
+		<div class="currencySelect">
+			<label for="currency">Choose a currency:</label>
+			<select id="currency" name="currency">
+				<option value="usd" selected>USD</option>
+				<option value="eur">EUR</option>
+				<option value="aud">AUD</option>
+				<option value="cad">CAD</option>
+				<option value="chf">CHF</option>
+				<option value="nzd">NZD</option>
+				<option value="bgn">BGN</option>
+			</select>
+		</div>
 		<div class="exchangeRate"></div>
+		<div class="longestArray"></div>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
