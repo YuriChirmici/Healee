@@ -1,20 +1,56 @@
-let currencies = ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'];
+let viewModel = kendo.observable({
+	currencies: ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'],
+	currency: 'usd',
+	currencyData: {},
 
-let currencyData = {};
+	longestChain() {
+		let currencyData = this.get('currencyData')[this.get('currency')];
+		if (!currencyData) return "loading...";
 
-let selectData = {
-	getData() {
-		renderHTML(currencyData);
-	}
-}
+		return getLongestChain(currencyData.exchangeRate);
+	},
 
-let viewModel = kendo.observable(selectData);
-kendo.bind($('select[name=currency]'), viewModel);
+	group(index) {
+		let groups = [[], [], []];
+		let data = this.get('currencyData')[this.get('currency')];
+
+		if (!data) return "loading...";
+
+		data.exchangeRate.forEach( el => {
+			el.currency = el.currency.toUpperCase();
+			el.currencyTo = el.currencyTo.toUpperCase();
+
+			if (el.value < 1) {
+				groups[0].push(el);
+			}
+			else if (el.value < 1.5) {
+				groups[1].push(el);
+			}
+			else {
+				groups[2].push(el);
+			}
+		})
+
+		groups.forEach((group) => {		
+			group.sort((a, b) => a.value - b.value);
+		});
+
+		return groups[index];
+	},
+
+	changeCurrency() {
+		let val = $('select[name=currency]')[0].value;
+		this.set('currency', val);
+	},
+});
+
+kendo.bind($('.currency__inner'), viewModel);
 
 window.onload = function() {
-	let currencySelect = $('select[name=currency]');
+	
+	let currencies = viewModel.get('currencies');
 	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
-	createOptions(currencySelect, currencies);
+	let currencySelected = viewModel.get('currency');
 	setLoading(true);
 	let promises = [];
 	
@@ -22,7 +58,7 @@ window.onload = function() {
 	//otherwise we send a request to the server
 	currencyData = getFromLocalStorage();
 	if (currencyData) {
-		renderHTML(currencyData);
+		viewModel.set('currencyData', currencyData);
 		setLoading(false);
 	}
 	else {
@@ -76,68 +112,10 @@ window.onload = function() {
 					data: currencyData,
 					date: getDate()
 				}));
-				currencyInfo = currencyData;
-				renderHTML(currencyData)
+
+				viewModel.set('currencyData', currencyData);
 			});
 	}
-}
-
-function renderHTML(data) {
-	let currencySelect = $('select[name=currency]')[0];
-	let currencySelected = currencySelect.value;
-	let exchangeRateDiv = $('.exchangeRate')[0];
-	let longestArrayDiv = $('.longestArray')[0];``
-
-	exchangeRateDiv.innerHTML = '';
-	longestArrayDiv.innerHTML = '';
-	let groups = [[], [], []];
-
-	//divides into 3 groups depending on the value
-	data[currencySelected].exchangeRate.forEach( el => {
-		if (el.value < 1) {
-			groups[0].push(el);
-		}
-		else if (el.value < 1.5) {
-			groups[1].push(el);
-		}
-		else {
-			groups[2].push(el);
-		}
-	})
-
-	//creates a div and adds sorted values
-	groups.forEach((group) => {
-		let div = document.createElement('div');
-		div.classList.add('currencyGroup');
-		
-		group.sort((a, b) => a.value - b.value);
-
-		group.forEach(el => {
-			let p = `<p> ${el.currency.toUpperCase()}-${el.currencyTo.toUpperCase()}: ${el.value} </p>`;
-			div.insertAdjacentHTML('beforeend', p);
-		});
-		let p = `<p class="red"> Count: ${group.length}`;
-		div.insertAdjacentHTML('beforeend', p);
-		exchangeRateDiv.append(div);
-	});	
-
-	let maxLength = getLongestChain(data[currencySelected].exchangeRate);
-	let p = `<p class="red"> The length of the longest array: ${maxLength}`;
-	longestArrayDiv.insertAdjacentHTML('beforeend', p);
-}
-
-function createOptions(element, labels) {
-	labels.forEach( (label, i) => {
-		let isSelected = i === 0 ? true : false;
-		let selectedOption = $('<option>', {
-				value: label,
-				text: label.toUpperCase()
-		});
-
-		selectedOption.attr('selected', isSelected);
-
-		element.append(selectedOption);
-	})
 }
 
 function getFromLocalStorage() {

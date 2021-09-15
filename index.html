@@ -10,20 +10,39 @@
 	<link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" rel="stylesheet" />
 	<script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
 	<script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
-		
 </head>
 <body>
 	<div class="container">
-		<div class="currencySelect">
-			<label for="currency">Choose a currency:</label>
-			<select name="currency" data-bind="click: getData"></select>
+		<div class="currency__inner">
+			<div class="currencySelect">
+				<label for="currency">Choose a currency:</label>
+				<select name="currency"
+					data-bind="source: currencies, value: currency, events: { change: changeCurrency }"
+				></select>
+			</div>
+			<div class="loading hide">loading...</div>
+			<div class="exchangeRate">
+				<div class="currencyGroup" data-template="li-template" data-bind="source: group(0)"></div>
+				<div class="currencyGroup" data-template="li-template" data-bind="source: group(1)"></div>
+				<div class="currencyGroup" data-template="li-template" data-bind="source: group(2)"></div>
+			</div>
+			<div class="longestArray">
+				<span>The length of the longest array: </span> 
+				<span data-bind='text: longestChain'></span>
+			</div>
 		</div>
-		<div class="loading hide">loading...</div>
-		<div class="exchangeRate"></div>
-		<div class="longestArray"></div>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+	<script id="li-template" type="text/x-kendo-template">
+		<li>
+			<span data-bind="text: currency"></span>-
+			<span data-bind="text: currencyTo"></span>:
+			<span data-bind="text: value"></span> 
+		</li>
+	</script>
+
 	<script src="js/script.js"></script>
 </body>
 </html>
