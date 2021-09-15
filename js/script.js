@@ -14,7 +14,6 @@ kendo.bind($('select[name=currency]'), viewModel);
 window.onload = function() {
 	let currencySelect = $('select[name=currency]');
 	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
-	localStorage.clear();
 	createOptions(currencySelect, currencies);
 	setLoading(true);
 	let promises = [];
@@ -127,15 +126,6 @@ function renderHTML(data) {
 	longestArrayDiv.insertAdjacentHTML('beforeend', p);
 }
 
-function toggleOptions(element, disabled) {
-	//disables the ability to select an option so that multiple requests 
-	//cannot be sent to the server until a response is received
-	let op = element.children("option");
-	for (let i = 0; i < op.length; i++) {
-		op[i].disabled = disabled;
-	}
-}
-
 function createOptions(element, labels) {
 	labels.forEach( (label, i) => {
 		let isSelected = i === 0 ? true : false;
@@ -208,15 +198,15 @@ function getLongestChain(data) {
 }
 
 function setLoading(isLoading) {
-	let currencySelect = $('#currency');
+	let currencySelect = $('.currencySelect');
 	let loading = $('.loading');
 
-	toggleOptions(currencySelect, isLoading);
-
 	if(isLoading) {
-		loading.addClass("hide");
+		currencySelect.addClass("hide");
+		loading.removeClass("hide");
 	}
 	else {
-		loading.removeClass("hide");
+		currencySelect.removeClass("hide");
+		loading.addClass("hide");
 	}
 }
