@@ -47,3 +47,7 @@ body {
 .red {
 	color: #c53;
 }
+
+.hide {
+	display: none;
+}

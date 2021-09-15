@@ -5,22 +5,20 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<title>Currency exhange rate</title>
+
+	<link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" rel="stylesheet" />
+	<link href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" rel="stylesheet" />
+	<script src="https://kendo.cdn.telerik.com/2021.2.616/js/jquery.min.js"></script>
+	<script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+		
 </head>
 <body>
 	<div class="container">
 		<div class="currencySelect">
 			<label for="currency">Choose a currency:</label>
-			<select id="currency" name="currency">
-				<option value="usd" selected>USD</option>
-				<option value="eur">EUR</option>
-				<option value="aud">AUD</option>
-				<option value="cad">CAD</option>
-				<option value="chf">CHF</option>
-				<option value="nzd">NZD</option>
-				<option value="bgn">BGN</option>
-			</select>
+			<select name="currency" data-bind="click: getData"></select>
 		</div>
-		<div class="loading">loading...</div>
+		<div class="loading hide">loading...</div>
 		<div class="exchangeRate"></div>
 		<div class="longestArray"></div>
 	</div>
