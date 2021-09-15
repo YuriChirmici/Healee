@@ -1,7 +1,10 @@
 let viewModel = kendo.observable({
+	baseURL: 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies',
 	currencies: ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'],
 	currency: 'usd',
 	currencyData: {},
+
+	isLoading: true,
 
 	longestChain() {
 		let currencyData = this.get('currencyData')[this.get('currency')];
@@ -11,37 +14,33 @@ let viewModel = kendo.observable({
 	},
 
 	group(index) {
-		let groups = [[], [], []];
-		let data = this.get('currencyData')[this.get('currency')];
+		let currencyData = this.get('currencyData')[this.get('currency')];
+		if (!currencyData) return "loading...";
 
-		if (!data) return "loading...";
-
-		data.exchangeRate.forEach( el => {
-			el.currency = el.currency.toUpperCase();
-			el.currencyTo = el.currencyTo.toUpperCase();
-
-			if (el.value < 1) {
-				groups[0].push(el);
-			}
-			else if (el.value < 1.5) {
-				groups[1].push(el);
-			}
-			else {
-				groups[2].push(el);
-			}
-		})
-
-		groups.forEach((group) => {		
-			group.sort((a, b) => a.value - b.value);
-		});
-
-		return groups[index];
+		return currencyGroup(currencyData, index);
 	},
 
-	changeCurrency() {
-		let val = $('select[name=currency]')[0].value;
-		this.set('currency', val);
+	groupList1() {
+		return this.get('group').call(this, 0);
 	},
+
+	groupList2 () {
+		return this.get('group').call(this, 1);
+	},
+
+	groupList3 () {
+		return this.get('group').call(this, 2);
+	},
+
+	isCurrencyVisible() {
+		return !this.get('isLoading');
+	},
+
+	isLoadingVisible() {
+		return this.get('isLoading');
+	},
+
+
 });
 
 kendo.bind($('.currency__inner'), viewModel);
@@ -49,9 +48,8 @@ kendo.bind($('.currency__inner'), viewModel);
 window.onload = function() {
 	
 	let currencies = viewModel.get('currencies');
-	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
+	let baseURL = viewModel.get('baseURL');
 	let currencySelected = viewModel.get('currency');
-	setLoading(true);
 	let promises = [];
 	
 	//if the data is in local storage, we take it from there, 
@@ -59,7 +57,7 @@ window.onload = function() {
 	currencyData = getFromLocalStorage();
 	if (currencyData) {
 		viewModel.set('currencyData', currencyData);
-		setLoading(false);
+		viewModel.set('isLoading', false);
 	}
 	else {
 		for (let i = 0; i < currencies.length; i++) {
@@ -72,7 +70,7 @@ window.onload = function() {
 		axios.all(promises)
 			.then( (responses) => {
 				currencyData = {};
-				setLoading(false);
+				viewModel.set('isLoading', false);
 
 				responses.forEach(response => {
 					let currencyURL = response.config.url.split('/');
@@ -116,6 +114,30 @@ window.onload = function() {
 				viewModel.set('currencyData', currencyData);
 			});
 	}
+}
+
+function currencyGroup(data, index) {
+	let groups = [[], [], []];
+	
+	data.exchangeRate.forEach( el => {
+		el.currency = el.currency.toUpperCase();
+		el.currencyTo = el.currencyTo.toUpperCase();
+
+		if (el.value < 1) {
+			groups[0].push(el);
+		}
+		else if (el.value < 1.5) {
+			groups[1].push(el);
+		}
+		else {
+			groups[2].push(el);
+		}
+	})
+
+	groups.forEach((group) => {		
+		group.sort((a, b) => a.value - b.value);
+	});
+	return groups[index];
 }
 
 function getFromLocalStorage() {
@@ -173,18 +195,4 @@ function getLongestChain(data) {
 	}, 0);
 
 	return maxLength;
-}
-
-function setLoading(isLoading) {
-	let currencySelect = $('.currencySelect');
-	let loading = $('.loading');
-
-	if(isLoading) {
-		currencySelect.addClass("hide");
-		loading.removeClass("hide");
-	}
-	else {
-		currencySelect.removeClass("hide");
-		loading.addClass("hide");
-	}
 }

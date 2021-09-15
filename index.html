@@ -13,18 +13,18 @@
 </head>
 <body>
 	<div class="container">
-		<div class="currency__inner">
+		<div class="currency__inner" data-bind="visible: isCurrencyVisible">
 			<div class="currencySelect">
 				<label for="currency">Choose a currency:</label>
 				<select name="currency"
-					data-bind="source: currencies, value: currency, events: { change: changeCurrency }"
+					data-bind="source: currencies, value: currency"
 				></select>
 			</div>
-			<div class="loading hide">loading...</div>
+			<div class="loading" data-bind="visible: isLoadingVisible">loading...</div>
 			<div class="exchangeRate">
-				<div class="currencyGroup" data-template="li-template" data-bind="source: group(0)"></div>
-				<div class="currencyGroup" data-template="li-template" data-bind="source: group(1)"></div>
-				<div class="currencyGroup" data-template="li-template" data-bind="source: group(2)"></div>
+				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList1"></div>
+				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList2"></div>
+				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList3"></div>
 			</div>
 			<div class="longestArray">
 				<span>The length of the longest array: </span> 
