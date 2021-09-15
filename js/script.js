@@ -1,14 +1,28 @@
+let currencies = ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'];
+
+let currencyData = {};
+
+let selectData = {
+	getData() {
+		renderHTML(currencyData);
+	}
+}
+
+let viewModel = kendo.observable(selectData);
+kendo.bind($('select[name=currency]'), viewModel);
+
 window.onload = function() {
-	let currencies = ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'];
+	let currencySelect = $('select[name=currency]');
 	let baseURL = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies';
+	localStorage.clear();
+	createOptions(currencySelect, currencies);
 	setLoading(true);
 	let promises = [];
 	
 	//if the data is in local storage, we take it from there, 
 	//otherwise we send a request to the server
-	let currencyData = getFromLocalStorage();
+	currencyData = getFromLocalStorage();
 	if (currencyData) {
-		currencyInfo = currencyData;
 		renderHTML(currencyData);
 		setLoading(false);
 	}
@@ -22,7 +36,7 @@ window.onload = function() {
 
 		axios.all(promises)
 			.then( (responses) => {
-				let currencyData = {};
+				currencyData = {};
 				setLoading(false);
 
 				responses.forEach(response => {
@@ -70,13 +84,13 @@ window.onload = function() {
 }
 
 function renderHTML(data) {
-	let currencySelect = document.querySelector('#currency');
-	let currencySelected = document.querySelector('#currency').value;
-	let exchangeRateDiv = document.querySelector('.exchangeRate');
-	let longestArrayDiv = document.querySelector('.longestArray');
+	let currencySelect = $('select[name=currency]')[0];
+	let currencySelected = currencySelect.value;
+	let exchangeRateDiv = $('.exchangeRate')[0];
+	let longestArrayDiv = $('.longestArray')[0];``
 
-	exchangeRateDiv.innerHTML = "";
-	longestArrayDiv.innerHTML = "";
+	exchangeRateDiv.innerHTML = '';
+	longestArrayDiv.innerHTML = '';
 	let groups = [[], [], []];
 
 	//divides into 3 groups depending on the value
@@ -113,13 +127,27 @@ function renderHTML(data) {
 	longestArrayDiv.insertAdjacentHTML('beforeend', p);
 }
 
-function disableOptions(element, disabled) {
+function toggleOptions(element, disabled) {
 	//disables the ability to select an option so that multiple requests 
 	//cannot be sent to the server until a response is received
-	let op = element.getElementsByTagName("option")
+	let op = element.children("option");
 	for (let i = 0; i < op.length; i++) {
 		op[i].disabled = disabled;
 	}
+}
+
+function createOptions(element, labels) {
+	labels.forEach( (label, i) => {
+		let isSelected = i === 0 ? true : false;
+		let selectedOption = $('<option>', {
+				value: label,
+				text: label.toUpperCase()
+		});
+
+		selectedOption.attr('selected', isSelected);
+
+		element.append(selectedOption);
+	})
 }
 
 function getFromLocalStorage() {
@@ -180,14 +208,15 @@ function getLongestChain(data) {
 }
 
 function setLoading(isLoading) {
-	let currencySelect = document.querySelector('#currency');
-	let loading = document.querySelector('.loading');
+	let currencySelect = $('#currency');
+	let loading = $('.loading');
 
-	disableOptions(currencySelect, isLoading);
-	loading.style.display = isLoading ? 'block' : 'none';
+	toggleOptions(currencySelect, isLoading);
+
+	if(isLoading) {
+		loading.addClass("hide");
+	}
+	else {
+		loading.removeClass("hide");
+	}
 }
-
-let currencySelect = document.querySelector('#currency');
-let currencyInfo;
-
-currencySelect.addEventListener('change', () => renderHTML(currencyInfo));
