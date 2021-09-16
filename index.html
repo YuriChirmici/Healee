@@ -17,13 +17,19 @@
 			<div class="currencySelect">
 				<label for="currency">Choose a currency:</label>
 				<select name="currency"
-					data-bind="source: currencies, value: currency"
+					data-bind="source: currencies, value: currency, events: {change: currencyChange}"
+
 				></select>
 			</div>
 			<div class="exchangeRate">
+				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList0"></div>
 				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList1"></div>
 				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList2"></div>
-				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList3"></div>
+			</div>
+			<div class="increment">
+				<button data-bind="click: valueIncrement">
+					Click
+				</button>
 			</div>
 			<div class="longestArray">
 				<span>The length of the longest array: </span> 
@@ -36,8 +42,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 	<script id="li-template" type="text/x-kendo-template">
-		<li>
-			<span data-bind="text: currency"></span>-
+		<li class="currency__item">
+			<span data-bind="text: currency"></span> -
 			<span data-bind="text: currencyTo"></span>:
 			<span data-bind="text: value"></span> 
 		</li>

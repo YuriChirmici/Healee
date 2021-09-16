@@ -13,24 +13,24 @@ let viewModel = kendo.observable({
 		return getLongestChain(currencyData.exchangeRate);
 	},
 
-	group(index) {
+	currencyChange() {
 		let currencyData = this.get('currencyData')[this.get('currency')];
-		if (!currencyData) return "loading...";
-
-		return currencyGroup(currencyData, index);
+		if (!currencyData) return null;
+		for (let i = 0; i < 3; i++) {
+			this.set(`groupList${i}`, currencyGroup(currencyData, i))
+		}
 	},
 
-	groupList1() {
-		return this.get('group').call(this, 0);
+	valueIncrement() {
+		let exchangeRate = this.get('currencyData')[this.get('currency')].exchangeRate;
+
+		exchangeRate.forEach(el => {
+			el.value = +((el.value + 1).toFixed(6));
+		})
+
+		this.get('currencyChange').call(this);
 	},
 
-	groupList2 () {
-		return this.get('group').call(this, 1);
-	},
-
-	groupList3 () {
-		return this.get('group').call(this, 2);
-	},
 });
 
 kendo.bind($('.container'), viewModel);
@@ -40,6 +40,7 @@ window.onload = function() {
 	let currencies = viewModel.get('currencies');
 	let baseURL = viewModel.get('baseURL');
 	let currencySelected = viewModel.get('currency');
+
 	let promises = [];
 
 	//if the data is in local storage, we take it from there, 
@@ -48,6 +49,7 @@ window.onload = function() {
 	if (currencyData) {
 		viewModel.set('currencyData', currencyData);
 		viewModel.set('isLoading', false);
+		viewModel.get('currencyChange').call(viewModel);
 	}
 	else {
 		for (let i = 0; i < currencies.length; i++) {
@@ -102,6 +104,7 @@ window.onload = function() {
 				}));
 
 				viewModel.set('currencyData', currencyData);
+				viewModel.get('currencyChange').call(viewModel);
 			});
 	}
 }
