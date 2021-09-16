@@ -31,19 +31,9 @@ let viewModel = kendo.observable({
 	groupList3 () {
 		return this.get('group').call(this, 2);
 	},
-
-	isCurrencyVisible() {
-		return !this.get('isLoading');
-	},
-
-	isLoadingVisible() {
-		return this.get('isLoading');
-	},
-
-
 });
 
-kendo.bind($('.currency__inner'), viewModel);
+kendo.bind($('.container'), viewModel);
 
 window.onload = function() {
 	
@@ -51,7 +41,7 @@ window.onload = function() {
 	let baseURL = viewModel.get('baseURL');
 	let currencySelected = viewModel.get('currency');
 	let promises = [];
-	
+
 	//if the data is in local storage, we take it from there, 
 	//otherwise we send a request to the server
 	currencyData = getFromLocalStorage();

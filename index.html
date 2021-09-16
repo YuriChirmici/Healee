@@ -13,14 +13,13 @@
 </head>
 <body>
 	<div class="container">
-		<div class="currency__inner" data-bind="visible: isCurrencyVisible">
+		<div class="currency__inner" data-bind="invisible: isLoading">
 			<div class="currencySelect">
 				<label for="currency">Choose a currency:</label>
 				<select name="currency"
 					data-bind="source: currencies, value: currency"
 				></select>
 			</div>
-			<div class="loading" data-bind="visible: isLoadingVisible">loading...</div>
 			<div class="exchangeRate">
 				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList1"></div>
 				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList2"></div>
@@ -31,6 +30,7 @@
 				<span data-bind='text: longestChain'></span>
 			</div>
 		</div>
+		<div class="currency__loading" data-bind="visible: isLoading">loading...</div>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
