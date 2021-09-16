@@ -43,10 +43,6 @@ body {
 	border-radius: 8px;
 }
 
-.red {
-	color: #c53;
-}
-
-.hide {
-	display: none;
+.increment {
+	text-align: center;
 }

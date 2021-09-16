@@ -15,11 +15,7 @@
 	<div class="container">
 		<div class="currency__inner" data-bind="invisible: isLoading">
 			<div class="currencySelect">
-				<label for="currency">Choose a currency:</label>
-				<select name="currency"
-					data-bind="source: currencies, value: currency, events: {change: currencyChange}"
-
-				></select>
+				<input id="currency" style="width: 100%;" />
 			</div>
 			<div class="exchangeRate">
 				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList0"></div>
@@ -28,7 +24,7 @@
 			</div>
 			<div class="increment">
 				<button data-bind="click: valueIncrement">
-					Click
+					Increment
 				</button>
 			</div>
 			<div class="longestArray">

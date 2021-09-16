@@ -13,9 +13,16 @@ let viewModel = kendo.observable({
 		return getLongestChain(currencyData.exchangeRate);
 	},
 
-	currencyChange() {
+	currencyChange(e) {
+		let a = this.get('currency');
+
+		if (e) {
+			this.set('currency', e.sender.value());
+		}
+
 		let currencyData = this.get('currencyData')[this.get('currency')];
 		if (!currencyData) return null;
+
 		for (let i = 0; i < 3; i++) {
 			this.set(`groupList${i}`, currencyGroup(currencyData, i))
 		}
@@ -30,10 +37,21 @@ let viewModel = kendo.observable({
 
 		this.get('currencyChange').call(this);
 	},
-
 });
 
 kendo.bind($('.container'), viewModel);
+
+let currencyDropDownList = $("#currency").kendoDropDownList({
+	optionLabel: "Select currency...",
+	dataTextField: "CurrencyName",
+	height: 300,
+	template: '<span class=\"k-state-default\"><h3>#: data #</h3></span>',
+	valueTemplate: '<span style="text-transform: uppercase; font-weight: 700;">#:data.CurrencyName#</span>',
+	dataSource: viewModel.get('currencies'),
+	change: viewModel.get('currencyChange').bind(viewModel),
+	value: viewModel.get('currency'),
+}).data("kendoDropDownList");
+
 
 window.onload = function() {
 	
