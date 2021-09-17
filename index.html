@@ -15,7 +15,16 @@
 	<div class="container">
 		<div class="currency__inner" data-bind="invisible: isLoading">
 			<div class="currencySelect">
-				<input id="currency" style="width: 100%;" />
+				<input id="currency" style="width: 100%;" 
+					data-role="dropdownlist"
+					data-option-label="Select currency..."
+					data-text-field="name"
+					data-value-field="value"
+					data-height="300"
+					data-template="currencySelect-template"
+					data-value-template="currencySelectValue-template"
+					data-bind="value: currency, source: currencies, events: { change: currencyChange }"
+				/>
 			</div>
 			<div class="exchangeRate">
 				<div class="currencyGroup" data-template="li-template" data-bind="source: groupList0"></div>
@@ -36,6 +45,16 @@
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+	<script id="currencySelect-template" type="text/x-kendo-template">
+		<span class=\"k-state-default\">
+			<h3 style="text-transform: uppercase; font-weight: 700;">#: data.value #</h3>
+		</span>
+	</script>
+
+	<script id="currencySelectValue-template" type="text/x-kendo-template">
+		<span style="text-transform: uppercase; font-weight: 700;">#: data.name #</span>
+	</script>
 
 	<script id="li-template" type="text/x-kendo-template">
 		<li class="currency__item">

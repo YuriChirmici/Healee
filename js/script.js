@@ -1,9 +1,16 @@
 let viewModel = kendo.observable({
 	baseURL: 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies',
-	currencies: ['usd', 'eur', 'aud', 'cad', 'chf', 'nzd', 'bgn'],
-	currency: 'usd',
+	currencies: [
+		{ name: "United States dollar", value: "usd" },
+		{ name: "Euro", value: "eur" },
+		{ name: "Australian Dollar", value: "aud" },
+		{ name: "Canadian Dollar", value: "cad" },
+		{ name: "Swiss Franc", value: "chf" },
+		{ name: "New Zealand Dollar", value: "nzd" },
+		{ name: "Bulgarian lev", value: "bgn" },
+	],
+	currency: "usd",
 	currencyData: {},
-
 	isLoading: true,
 
 	longestChain() {
@@ -13,18 +20,14 @@ let viewModel = kendo.observable({
 		return getLongestChain(currencyData.exchangeRate);
 	},
 
-	currencyChange(e) {
-		let a = this.get('currency');
-
-		if (e) {
-			this.set('currency', e.sender.value());
-		}
-
+	currencyChange() {
 		let currencyData = this.get('currencyData')[this.get('currency')];
 		if (!currencyData) return null;
 
+		let currencyGroups = getCurrencyGroups(currencyData);
+
 		for (let i = 0; i < 3; i++) {
-			this.set(`groupList${i}`, currencyGroup(currencyData, i))
+			this.set(`groupList${i}`, currencyGroups[i])
 		}
 	},
 
@@ -41,23 +44,11 @@ let viewModel = kendo.observable({
 
 kendo.bind($('.container'), viewModel);
 
-let currencyDropDownList = $("#currency").kendoDropDownList({
-	optionLabel: "Select currency...",
-	dataTextField: "CurrencyName",
-	height: 300,
-	template: '<span class=\"k-state-default\"><h3>#: data #</h3></span>',
-	valueTemplate: '<span style="text-transform: uppercase; font-weight: 700;">#:data.CurrencyName#</span>',
-	dataSource: viewModel.get('currencies'),
-	change: viewModel.get('currencyChange').bind(viewModel),
-	value: viewModel.get('currency'),
-}).data("kendoDropDownList");
-
 
 window.onload = function() {
 	
-	let currencies = viewModel.get('currencies');
+	let currencies = viewModel.get('currencies').list;
 	let baseURL = viewModel.get('baseURL');
-	let currencySelected = viewModel.get('currency');
 
 	let promises = [];
 
@@ -127,7 +118,7 @@ window.onload = function() {
 	}
 }
 
-function currencyGroup(data, index) {
+function getCurrencyGroups(data) {
 	let groups = [[], [], []];
 	
 	data.exchangeRate.forEach( el => {
@@ -148,7 +139,7 @@ function currencyGroup(data, index) {
 	groups.forEach((group) => {		
 		group.sort((a, b) => a.value - b.value);
 	});
-	return groups[index];
+	return groups;
 }
 
 function getFromLocalStorage() {
