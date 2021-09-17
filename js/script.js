@@ -32,12 +32,12 @@ let viewModel = kendo.observable({
 	},
 
 	valueIncrement() {
-		let exchangeRate = this.get('currencyData')[this.get('currency')].exchangeRate;
-
-		exchangeRate.forEach(el => {
-			el.value = +((el.value + 1).toFixed(6));
-		})
-
+		for(let i = 0; i < 3; i++) {
+			const arr = this.get("groupList" + i);
+			for (let i = 0; i < arr.length; i++) {
+				arr[i].set("value", +(arr[i].value + 1).toFixed(6));
+			}
+		}
 		this.get('currencyChange').call(this);
 	},
 });
