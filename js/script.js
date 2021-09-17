@@ -47,9 +47,8 @@ kendo.bind($('.container'), viewModel);
 
 window.onload = function() {
 	
-	let currencies = viewModel.get('currencies').list;
+	let currencies = viewModel.get('currencies');
 	let baseURL = viewModel.get('baseURL');
-
 	let promises = [];
 
 	//if the data is in local storage, we take it from there, 
@@ -64,7 +63,7 @@ window.onload = function() {
 		for (let i = 0; i < currencies.length; i++) {
 			for (let j = 0; j < currencies.length; j++) {
 				if (i === j) continue;
-				promises.push(axios.get(`${baseURL}/${currencies[i]}/${currencies[j]}.json`));				
+				promises.push(axios.get(`${baseURL}/${currencies[i].value}/${currencies[j].value}.json`));				
 			}
 		}
 
